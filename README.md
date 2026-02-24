@@ -17,7 +17,7 @@ dvins/
 ├── backend/          # Express API + SQLite (polls Queue-Times API)
 ├── mobile/           # React Native app (iOS & Android)
 ├── docs/             # Setup guides and documentation
-└── shared/           # Common types and utilities
+└── planning/         # Planning documents (PRD, BRD, architecture, design)
 ```
 
 ## Tech Stack
@@ -54,8 +54,8 @@ dvins/
 
 ### 1. Clone & Navigate
 ```bash
-git clone https://github.com/ace-d-baugh/walts-sandbox.git
-cd walts-sandbox/dvins
+git clone https://github.com/ace-d-baugh/dvins.git
+cd dvins
 ```
 
 ### 2. Start the Backend
@@ -187,24 +187,26 @@ dvins/
 │   │   ├── database/         # SQLite schema & connection
 │   │   ├── routes/           # API endpoints
 │   │   ├── services/         # Business logic
+│   │   ├── middleware/       # Auth & validation middleware
 │   │   └── utils/            # Helpers
 │   └── tests/                # Unit & integration tests
 ├── mobile/                   # React Native app
 │   ├── package.json
 │   ├── src/
 │   │   ├── screens/          # UI screens
-│   │   ├── navigation/         # React Navigation
-│   │   ├── services/           # API & Firebase
-│   │   ├── contexts/           # React contexts
-│   │   └── hooks/              # Custom hooks
+│   │   ├── navigation/       # React Navigation
+│   │   └── services/         # API & Firebase
 │   └── App.tsx
 ├── docs/                     # Documentation
 │   ├── environment.md        # Environment variables
 │   ├── firebase-setup.md     # Firebase configuration
-│   ├── ci-cd.md              # Deployment guides
-│   └── setup/                # Platform-specific setup
-└── shared/                   # Common code
-    └── types/                # TypeScript definitions
+│   └── ci-cd.md              # Deployment guides
+└── planning/                 # Project planning documents
+    ├── PRD.md                # Product Requirements Document
+    ├── BRD.txt               # Business Requirements Document
+    ├── architecture.md       # System architecture
+    ├── design.txt            # Design specifications
+    └── TASKS.md              # Development task tracking
 ```
 
 ## Development Workflow
