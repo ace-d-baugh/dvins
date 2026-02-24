@@ -1,0 +1,74 @@
+https://queue-times.com/en-US/pages/api
+
+
+
+Magic Kingdom:
+https://queue-times.com/parks/6/queue_times.json
+
+Epcot:
+https://queue-times.com/parks/5/queue_times.json
+
+Hollywood Studios:
+https://queue-times.com/parks/7/queue_times.json
+
+Animal Kingdom:
+https://queue-times.com/parks/8/queue_times.json
+
+
+App function:
+Constantly running
+Pulling information from database every 5 minutes
+Storing wait times for each attraction in variables
+Comparing variables to previous pulled information
+Send notification upon desired changes
+	Attraction goes down
+	Wait Time gets below threshold
+
+
+Variables Needed
+Array: old_wait_times // Array of
+Object:
+	park
+	land
+	ride
+	Is_open
+	wait_time
+	
+
+Set Up the MEAN Stack:
+
+Install Node.js and npm (Node Package Manager).
+Install MongoDB and start the MongoDB server.
+Create Express.js Application:
+
+Set up an Express.js application to handle the backend.
+Use npm init to initialize your project and install necessary dependencies.
+Create a MongoDB Database and Model:
+
+Connect your Express.js app to MongoDB.
+Create a model for storing the JSON data in the database.
+Fetch and Store Data Every 5 Minutes:
+
+Use a scheduling library like node-cron to fetch data from the provided URL every 5 minutes.
+Store the data in your MongoDB database.
+Compare Data:
+
+Compare the newly fetched data with the previous data.
+Determine any changes in the queue times.
+Send Notifications to Slack:
+
+Integrate your app with the Slack API using the @slack/web-api package.
+Send notifications to a Slack channel when there are changes in queue times.
+Create an Angular Frontend:
+
+Set up an Angular frontend to visualize the data.
+Fetch and display the data from the backend.
+Build User Interface for Notifications:
+
+Create a user interface to set up and manage Slack notification preferences.
+Testing:
+
+Test your application thoroughly, especially the data fetching, storing, and notification functionalities.
+Deployment:
+
+Deploy your MEAN stack application to a hosting platform (e.g., Heroku, AWS, etc.).

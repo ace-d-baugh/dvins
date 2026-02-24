@@ -1,0 +1,163 @@
+D'VINS Business Requirements Document
+1. Executive Summary
+D'VINS (Disney Very Important Notification System) is a cross-platform mobile application for iOS and Android that provides real-time wait times for attractions at Walt Disney World. The app retrieves data from the Queue-Times API (https://queue-times.com/) every 5 minutes, displaying attraction names, wait times, operational status (open/closed), and trending wait times (increasing/decreasing). Users can sort attractions by park, favorites, alphabetical order, or wait times, and receive push notifications for user-defined wait time thresholds or attraction reopenings. The app will be developed using React Native, leveraging free hosting options, and coded with bolt.ai, with version control on GitHub, backend hosting on a shared Linux server, and bug tracking via Monday.com.
+2. Project Objective
+To create a user-friendly mobile app that enhances the Walt Disney World guest experience by providing real-time attraction wait times, customizable sorting, and timely notifications, developed and hosted using free tools and infrastructure to minimize costs.
+3. Scope
+3.1 In-Scope
+Core Features:
+Retrieve and display real-time wait times, attraction names, status (open/closed), and trending wait times from the Queue-Times API (https://queue-times.com/).
+Update data every 5 minutes.
+Calculate trending wait times by comparing current and historical data, displayed as green upward-right (↗) or red downward-right (↘) arrows.
+Display a downtime counter (e.g., “Down for X min”) for non-operational attractions not closed for the evening.
+Provide an optional link to the Queue-Times website for additional attraction stats.
+Allow users to sort attractions by park (Magic Kingdom, Epcot, Hollywood Studios, Animal Kingdom), favorites, alphabetical order, or wait times.
+Enable users to mark favorites by clicking a star icon in the “All Parks” list.
+Send push notifications per attraction for user-defined wait time thresholds (0–90 minutes, 5-minute increments) or reopenings, with silent or notify (sound/vibration) settings.
+Platforms: iOS and Android (native apps via React Native, with potential Progressive Web App (PWA) for cost-free distribution).
+Development Tools:
+React Native (JavaScript) for cross-platform development.
+bolt.ai (local version) for code and file generation, with prompts crafted by the developer and AI assistance.
+Visual Studio Code for code editing and debugging (developer is comfortable debugging).
+GitHub for version control.
+Monday.com for bug reporting and task tracking.
+Hosting:
+Shared Linux server for backend (Node.js, Express, SQLite) to handle API calls and notifications.
+Firebase Cloud Messaging (free tier) for push notifications.
+GitHub for code hosting.
+TestFlight (iOS) and Google Play Internal Testing (Android) for beta distribution.
+Optional PWA hosting on Linux server or Vercel (free tier) to avoid app store fees.
+Initial User Base: Up to 120 daily active users, operating from 7:00 AM ET to 11:59 PM ET, with peak usage between 9:00 AM ET and 6:00 PM ET.
+3.2 Out-of-Scope
+Support for other Disney resorts (e.g., Disneyland, Tokyo Disney) in the initial release.
+Monetization features (e.g., ads, in-app purchases) in the initial release.
+Advanced features like attraction maps, park hours, or geolocation-based sorting in the initial release.
+Paid hosting or premium services (e.g., AWS, paid Firebase tiers).
+BigBrain mode or advanced Grok 3 features (not publicly available).
+4. Stakeholders
+Developer/Owner: Responsible for planning, crafting bolt.ai prompts, debugging, and deployment.
+Beta Testers: Provide feedback on usability, performance, and feature requests (via Monday.com).
+End Users: Walt Disney World guests seeking real-time wait time information (up to 120 daily users).
+API Provider: Queue-Times (https://queue-times.com/) supplies wait time data.
+5. Functional Requirements
+5.1 Data Retrieval and Display
+FR1: The app shall retrieve wait time data from the Queue-Times API (https://queue-times.com/) every 5 minutes.
+FR2: The app shall display for each attraction:
+Attraction name.
+Current wait time (in minutes).
+Status (open, closed, or down).
+Trending wait time (green upward-right arrow ↗ for increasing, red downward-right arrow ↘ for decreasing, calculated by comparing current and historical data).
+Downtime counter (e.g., “Down for X min”) for attractions that are non-operational but not closed for the evening.
+Optional link to https://queue-times.com/ for additional attraction stats.
+FR3: The app shall cache API data locally to display last-known wait times during network failures.
+FR4: The app shall handle API errors gracefully, displaying “Data unavailable” when fetch fails.
+5.2 Sorting and Filtering
+FR5: Users shall sort attractions by:
+Park (Magic Kingdom, Epcot, Hollywood Studios, Animal Kingdom).
+Favorites (user-defined via star icon).
+Alphabetical order (A–Z). - g Wait time (ascending/descending).
+FR6: Users shall filter attractions by park, with an option to view all parks.
+FR7: Sorting and filtering preferences shall persist across app sessions using local storage (AsyncStorage) or server-side database.
+FR8: Users shall mark attractions as favorites by clicking a star icon next to the name in the “All Parks” list.
+5.3 Notifications
+FR9: Users shall set notification preferences per attraction, including:
+Wait time thresholds (0–90 minutes, 5-minute increments, e.g., 5, 10, 15, …, 90) via a dropdown.
+Reopening alerts when an attraction changes from closed/down to open.
+Notification status (silent or notify with sound/vibration).
+FR10: The app shall send push notifications via Firebase Cloud Messaging when conditions are met, checked every 5 minutes during API updates.
+FR11: Users shall enable/disable notifications and customize sound/vibration settings per attraction.
+FR12: The app shall request notification permissions on first launch.
+5.4 User Interface
+FR règne: The primary screen shall display a sortable list of attractions, with tabs or dropdowns for park selection and sorting options.
+FR14: Trend indicators shall use green upward-right arrows (↗) for increasing wait times, red downward-right arrows (↘) for decreasing, and downtime counters (e.g., “Down for X min”) for non-operational attractions.
+FR15: The app shall include a clickable star icon next to each attraction name for marking favorites.
+FR16: The app shall provide an optional link to https://queue-times.com/ for more attraction stats.
+FR17: The app shall support system theme (light/dark mode) without manual toggle.
+FR18: The UI shall be responsive across iOS and Android devices (phones and tablets).
+FR19: The app shall include a settings screen for managing notifications (dropdown for thresholds, silent/notify toggle) and favorites.
+6. Non-Functional Requirements
+6.1 Performance
+NFR1: The app shall load the attraction list within 2 seconds under normal network conditions.
+NFR2: API data shall refresh every 5 minutes without user intervention.
+NFR3: Notifications shall be delivered within 1 minute of a condition being met.
+NFR4: The app shall handle up to 120 concurrent users during peak hours (9:00 AM–6:00 PM ET).
+6.2 Reliability
+NFR5: The backend shall maintain 99% uptime on the shared Linux server, monitored with tools like PM2.
+NFR6: The app shall handle API rate limits or downtime by caching data and retrying failed requests.
+6.3 Security
+NFR7: API keys and Firebase credentials shall be stored in environment variables, excluded from GitHub.
+NFR8: The backend shall use HTTPS (Let’s Encrypt) and sanitize inputs to prevent injection attacks.
+NFR9: User data (e.g., favorites, notification settings) shall be stored securely in SQLite or Firebase Firestore.
+6.4 Compatibility
+NFR10: The app shall support iOS 16+ and Android 11+ for native versions.
+NFR11: The PWA (if implemented) shall support Chrome and Safari on mobile devices.
+6.5 Scalability
+NFR12: The backend shall support up to 120 concurrent users on the shared Linux server, with a plan to migrate to Render or Vercel if needed.
+NFR13: The database shall handle up to 10,000 records (e.g., wait time history, user preferences).
+7. Assumptions
+The Queue-Times API (https://queue-times.com/) is accessible and allows polling every 5 minutes.
+The shared Linux server has sufficient resources (e.g., 512MB RAM, 1GB storage, Node.js support) for backend hosting.
+bolt.ai, with AI-assisted prompts, can generate reliable React Native and Node.js code, with the developer comfortable debugging.
+Beta testers will provide feedback via Monday.com.
+8. Constraints
+Budget: Development and hosting must use free tools and services (e.g., GitHub, Firebase free tier, Linux server).
+Distribution: App store fees ($99/year for Apple, $25 one-time for Google) may be deferred by using TestFlight, Google Play Internal Testing, or a PWA.
+Hardware: iOS builds require a Mac (local or cloud-based, e.g., MacStadium).
+API: Dependency on Queue-Times API, with potential rate limits or terms of service restrictions.
+9. Risks and Mitigation
+Risk 1: Shared Linux server lacks resources for 120 users.
+Mitigation: Monitor performance with htop or nload. Migrate to Render or Vercel free tier if needed.
+Risk 2: Queue-Times API rate limits or downtime disrupt data updates.
+Mitigation: Cache data locally, implement retry logic, and display fallback messages.
+Risk 3: bolt.ai generates incorrect or incomplete code.
+Mitigation: Use specific, AI-assisted prompts (e.g., “Generate a React Native FlatList for sorting attractions”), validate code in Visual Studio Code, and write unit tests.
+Risk 4: App store fees delay native app distribution.
+Mitigation: Use TestFlight and Google Play Internal Testing for beta testing, or deploy as a PWA on Vercel/Linux server.
+10. Development and Deployment Plan
+10.1 Development
+Tools:
+React Native for cross-platform app development.
+Node.js, Express, and SQLite for backend.
+Firebase Cloud Messaging for notifications.
+Visual Studio Code for editing, debugging, and Git integration.
+bolt.ai for generating code, with prompts crafted by the developer and AI assistance.
+Monday.com for bug reporting and task tracking.
+Process:
+Create GitHub repository for version control.
+Use bolt.ai to generate:
+React Native app scaffold with FlatList for attraction display (including stars, trends, downtime counters).
+Node.js backend for API fetching, trend calculation, and notification logic.
+Firebase integration for push notifications with user-defined thresholds.
+Test locally with Android Studio (Android) and Xcode (iOS, via Mac or cloud).
+Commit code to GitHub with clear messages (e.g., “Added notification settings with dropdown”).
+Track bugs and tasks in Monday.com.
+10.2 Hosting
+Code: GitHub private repository.
+Backend: Shared Linux server (Node.js, Express, SQLite, PM2 for process management).
+Notifications: Firebase Cloud Messaging (free tier).
+Fallback Hosting: Render or Vercel free tiers if server performance is inadequate.
+10.3 Distribution
+Beta Testing:
+iOS: TestFlight for up to 10,000 testers.
+Android: Google Play Internal Testing or direct APKs for up to 100 testers.
+Public Release:
+Option 1: Apple App Store and Google Play Store (deferred due to fees).
+Option 2: PWA hosted on Linux server (Nginx) or Vercel, accessible via browser.
+11. Success Criteria
+App successfully retrieves and displays wait times for all Walt Disney World parks, updated every 5 minutes.
+Users can sort attractions by park, favorites, alphabetical order, and wait times with no performance lag.
+Push notifications are delivered reliably for user-defined conditions (wait time thresholds via 5-minute dropdown, reopenings, silent/notify settings).
+Trends are accurately displayed (green ↗, red ↘, downtime counters).
+Optional link to Queue-Times website functions correctly.
+Beta testing with up to 120 users yields positive feedback (e.g., 80% satisfaction rate).
+Development and hosting remain within free tier limits (GitHub, Firebase, Linux server).
+12. Open Questions (To Be Resolved)
+API Details: What are the Queue-Times API’s rate limits and authentication requirements (e.g., API key)?
+Notifications: Should reopening alerts apply to all attractions or only favorites?
+Sorting: Are additional sorting options (e.g., attraction type, proximity) required?
+Server: What are the Linux server’s specs (e.g., CPU, RAM, storage)?
+UI: Any additional screens or features (e.g., park overview)?
+13. Approval
+This updated document will guide the development of D'VIN. Approval from the developer/owner is required to proceed. Updates will be made as open questions are resolved and feedback is incorporated.
+Developer/Owner: Matthew Ace Baugh
+Date: April 28, 2025

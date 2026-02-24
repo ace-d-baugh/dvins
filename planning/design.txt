@@ -1,0 +1,237 @@
+D'VINS Design Brief (Updated)
+1. Overview
+D'VINS (Disney Very Important Notification System) is a cross-platform mobile application for iOS and Android that provides real-time wait times for Walt Disney World attractions. The app retrieves data from the Queue-Times API (https://queue-times.com/) every 5 minutes, displaying attraction names, wait times, operational status (open/closed), and trending wait times (increasing/decreasing). Users can sort attractions by park, favorites, alphabetical order, or wait times, and receive push notifications for user-defined wait time thresholds or attraction reopenings. Built with React Native, the app leverages free hosting (shared Linux server, Firebase Cloud Messaging, GitHub, optional Vercel for PWA) and is coded using bolt.ai, with version control in Visual Studio Code and GitHub. Bug reporting will be managed via Monday.com. This Design Brief outlines the UX/UI, visual style, and technical design to ensure a seamless, intuitive experience for Walt Disney World guests.
+2. Objectives
+Deliver an intuitive, visually appealing interface that simplifies access to attraction wait times.
+Ensure fast, reliable performance for real-time data updates and notifications.
+Create a consistent cross-platform experience for iOS and Android, with optional PWA support.
+Guide bolt.ai in generating React Native code and UI components that align with Disney’s magical aesthetic.
+3. Target Audience
+Primary Users: Walt Disney World guests (ages 16–60) seeking real-time wait time information to plan their park visits.
+Demographics: Families, couples, solo travelers; tech-savvy or casual smartphone users.
+Needs: Quick access to wait times, ability to prioritize favorite attractions, alerts for low wait times or reopenings.
+Usage: Up to 120 daily active users, operating from 7:00 AM ET to 11:59 PM ET, with peak usage between 9:00 AM ET and 6:00 PM ET.
+Secondary Users: Disney enthusiasts or planners who track attraction trends for strategic park navigation.
+Accessibility: Support for screen readers, high-contrast text, and intuitive navigation for diverse users.
+4. User Experience (UX) Goals
+Simplicity: Minimize steps to view wait times, sort attractions, or set notifications.
+Engagement: Reflect Disney’s magical, family-friendly vibe through colors, icons, and animations.
+Efficiency: Ensure fast loading and smooth navigation, even on older devices (iOS 16+, Android 11+).
+Personalization: Allow users to customize sorting, favorites, and notification preferences.
+5. User Interface (UI) Design
+5.1 Layout and Navigation
+Primary Screen: Attraction List
+Displays a scrollable list of attractions using React Native’s FlatList.
+Each list item shows:
+Attraction name (e.g., “Space Mountain”).
+Wait time (e.g., “45 min”).
+Status (e.g., “Open” or “Closed”).
+Trend indicator:
+Green upward-right arrow (↗) for increasing wait time.
+Red downward-right arrow (↘) for decreasing wait time.
+For non-operational attractions (not closed for the evening), a counter showing downtime duration (e.g., “Down for 20 min”).
+Star icon (clickable) to mark as favorite.
+Optional link to Queue-Times website (https://queue-times.com/) for more attraction stats.
+Example UI component prompt for bolt.ai:
+// Generate a React Native component for an attraction list item
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const AttractionItem = ({ name, waitTime, status, trend, downtime, isFavorite, onToggleFavorite }) => (
+  <View style={styles.container}>
+    <Text style={styles.name}>{name}</Text>
+    <Text style={styles.waitTime}>{waitTime} min</Text>
+    <Text style={styles.status}>{status}</Text>
+    {status === 'Open' ? (
+      <Text style={[styles.trend, { color: trend === 'up' ? '#28A745' : '#DC3545' }]}>
+        {trend === 'up' ? '↗' : '↘'}
+      </Text>
+    ) : status === 'Down' ? (
+      <Text style={styles.downtime}>Down for {downtime} min</Text>
+    ) : null}
+    <TouchableOpacity onPress={onToggleFavorite}>
+      <Icon name={isFavorite ? 'star' : 'star-o'} size={20} color="#FFC107" />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => Linking.openURL('https://queue-times.com/')}>
+      <Text style={styles.link}>More Stats</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const styles = StyleSheet.create({
+  container: { flexDirection: 'row', padding: 10, borderBottomWidth: 1, alignItems: 'center' },
+  name: { flex: 2, fontSize: 16 },
+  waitTime: { flex: 1, fontSize: 16, color: '#007AFF' },
+  status: { flex: 1, fontSize: 16, color: status === 'Open' ? '#28A745' : '#DC3545' },
+  trend: { flex: 0.5, fontSize: 16 },
+  downtime: { flex: 0.5, fontSize: 16, color: '#6C757D' },
+  link: { flex: 1, fontSize: 14, color: '#007AFF' },
+});
+
+export default AttractionItem;
+Navigation:
+Top Bar: Tabs or dropdown for park selection (Magic Kingdom, Epcot, Hollywood Studios, Animal Kingdom, “All Parks”).
+Bottom Navigation: Three tabs:
+Home: Attraction list with sorting/filtering.
+Favorites: List of user-selected favorite attractions.
+Settings: Notification preferences, about page.
+Use react-navigation for navigation (prompt: “Generate a React Native bottom tab navigator with Home, Favorites, and Settings screens”).
+Secondary Screens:
+Settings: Toggles for notifications, sound/vibration options, favorite management.
+Notification Setup: Form to select attractions and set wait time thresholds via a dropdown (0–90 minutes, 5-minute increments).
+5.2 Visual Style
+Color Scheme:
+Primary: Disney-inspired colors (e.g., Magic Kingdom purple: #6B5B95, Epcot blue: #00A1D6).
+Secondary: Neutral grays (#F8F9FA, #6C757D) for backgrounds and text.
+Accents: Green (#28A745) for open status and upward trends, red (#DC3545) for closed status and downward trends, yellow (#FFC107) for favorite stars.
+Use a palette inspired by Disney’s branding (prompt: “Generate a React Native stylesheet with Disney-themed colors”).
+Typography:
+Font: System fonts (San Francisco for iOS, Roboto for Android) for compatibility.
+Sizes: 16px for body text, 20px for headings, 14px for secondary text (e.g., “More Stats” link).
+Ensure high contrast for accessibility (WCAG 2.1 compliance).
+Icons:
+Use @expo/vector-icons (e.g., FontAwesome) for stars (favorites), arrows (trends), and settings gear.
+Example: Green upward-right arrow (↗) for increasing wait times, red downward-right arrow (↘) for decreasing, yellow star for favorites.
+Animations:
+Subtle transitions for list updates (e.g., fade-in for new data).
+Bounce effect for notification alerts (use react-native-animatable).
+Prompt: “Generate a React Native component with a fade-in animation for list items.”
+5.3 Accessibility
+Support screen readers (use accessible and accessibilityLabel props in React Native).
+Ensure touch targets (e.g., star icon, “More Stats” link) are at least 44x44 pixels.
+Provide high-contrast text (e.g., white text on purple background).
+Test with VoiceOver (iOS) and TalkBack (Android).
+6. Functional Design
+6.1 Data Retrieval and Display
+API Integration:
+Backend (Node.js, Express) fetches data every 5 minutes from the Queue-Times API (https://queue-times.com/).
+Store data in SQLite on the shared Linux server, including historical wait times for trend calculation.
+Cache data locally using AsyncStorage for offline access.
+Prompt: “Generate a Node.js Express route to fetch and store wait time data from https://queue-times.com/ in SQLite every 5 minutes.”
+Trend Calculation:
+Calculate trends by comparing current wait time to previous wait time (stored in SQLite).
+Example: If wait time increases (e.g., 30 min to 35 min), display green upward-right arrow (↗). If decreases (e.g., 30 min to 25 min), display red downward-right arrow (↘).
+For non-operational attractions (e.g., temporarily down), calculate downtime duration since last “Open” status and display as “Down for X min.”
+Display Logic:
+Use FlatList for efficient rendering of attraction data.
+Show “Data unavailable” during API failures.
+Include a “More Stats” link to https://queue-times.com/ for additional attraction details.
+6.2 Sorting and Filtering
+Sorting Options:
+Park: Filter by Magic Kingdom, Epcot, Hollywood Studios, Animal Kingdom, or “All Parks.”
+Favorites: User-defined list, stored in AsyncStorage or SQLite.
+Alphabetical: A–Z sorting of attraction names.
+Wait Time: Ascending/descending order.
+Use JavaScript’s Array.sort() (prompt: “Generate a React Native sorting function for attractions by park, favorites, alphabetical, and wait time”).
+UI Controls:
+Dropdown or segmented control for sort options (use react-native-picker).
+Persist preferences across sessions.
+Favorites:
+Users mark attractions by clicking a star icon next to the name in the “All Parks” list.
+Store in AsyncStorage or sync with server for cross-device access.
+Prompt: “Generate a React Native component to toggle favorite status with a star icon.”
+6.3 Notifications
+Setup:
+Settings screen with a form to select attractions and set:
+Wait time thresholds via a dropdown (0–90 minutes, 5-minute increments, e.g., 5, 10, 15, …, 90).
+Notification status (silent or notify with sound/vibration).
+Notifications apply per attraction, based on user-defined thresholds and reopening alerts.
+Prompt: “Generate a React Native settings screen for notification preferences with a 5-minute incremental dropdown (0–90 minutes) and silent/notify toggles.”
+Delivery:
+Use Firebase Cloud Messaging (FCM) for push notifications.
+Backend checks conditions every 5 minutes (e.g., wait time < user-defined threshold, status changes to “Open”).
+Example FCM notification:
+const message = {
+  notification: {
+    title: 'D'VIN Alert',
+    body: 'Space Mountain wait time is now 25 minutes!',
+  },
+  token: userDeviceToken,
+  data: { sound: userNotificationStatus === 'notify' ? 'default' : 'none' },
+};
+Prompt: “Generate a Node.js function to send FCM notifications for user-defined wait time thresholds and reopening alerts.”
+Permissions:
+Request notification permissions on first launch using react-native-permissions.
+6.4 Offline Support
+Cache last-known API data in AsyncStorage for offline viewing.
+Display a banner (“Offline Mode”) when network is unavailable.
+Prompt: “Generate a React Native component to cache and display offline data.”
+7. Technical Design
+7.1 Frontend (React Native)
+Framework: React Native with JavaScript.
+Libraries:
+react-navigation for tabs and stack navigation.
+@expo/vector-icons for icons (stars, arrows).
+axios for API calls.
+react-native-animatable for animations.
+react-native-picker for dropdowns.
+Structure:
+Components: AttractionItem, ParkSelector, SortDropdown, NotificationSettings.
+Screens: HomeScreen, FavoritesScreen, SettingsScreen.
+Prompt: “Generate a React Native app structure with navigation and reusable components.”
+State Management:
+Use React’s Context API or zustand for lightweight state (e.g., attraction data, user preferences).
+Prompt: “Generate a Zustand store for managing attraction data and user settings.”
+7.2 Backend (Node.js)
+Framework: Express.js on shared Linux server.
+Database: SQLite for storing API data (including historical wait times for trends) and user preferences (favorites, notification settings).
+Scheduling: setInterval or cron job for 5-minute API fetches from https://queue-times.com/.
+Notifications: Firebase Cloud Messaging (free tier).
+Security:
+HTTPS with Let’s Encrypt.
+helmet middleware for Express.
+Environment variables for API keys (use dotenv).
+Process Management: PM2 to ensure uptime.
+Prompt: “Generate a Node.js Express server with SQLite, cron for API fetches from https://queue-times.com/, and FCM notifications.”
+7.3 Hosting
+Code: GitHub private repository.
+Backend: Shared Linux server (Node.js, SQLite, PM2). Fallback: Render or Vercel free tiers.
+Notifications: Firebase Cloud Messaging.
+Distribution:
+Beta: TestFlight (iOS), Google Play Internal Testing or APKs (Android).
+Optional PWA: Hosted on Linux server (Nginx) or Vercel.
+Prompt: “Generate an Nginx configuration for hosting a React Native Web PWA.”
+7.4 Development Tools
+bolt.ai: Generate code with specific prompts crafted by the developer with AI assistance (e.g., “Generate a React Native FlatList with sorting”).
+Visual Studio Code: Extensions for React Native, ESLint, Prettier, GitLens.
+Testing: Android Studio (Android emulator), Xcode (iOS emulator, via Mac or cloud).
+Project Management: Monday.com for bug reporting and task tracking.
+Debugging: Developer is comfortable debugging bolt.ai-generated code.
+8. Constraints
+Budget: Free tools and hosting only (GitHub, Firebase, Linux server).
+API: Dependency on Queue-Times API (https://queue-times.com/), with potential rate limits or terms of service restrictions.
+Hardware: iOS builds require a Mac (local or cloud-based).
+Distribution: App store fees ($99/year Apple, $25 one-time Google) may be deferred with PWA or beta testing.
+9. Deliverables
+Wireframes: Low-fidelity sketches of primary screens (Home, Favorites, Settings).
+Example: Home screen with park tabs, sortable list, star icons, and trend arrows.
+Prompt: “Generate a Figma wireframe for a mobile app with a sortable list, star icons, and bottom tabs.”
+UI Components: React Native components for attraction list (with stars, trends, downtime counter), park selector, sort dropdown, notification settings (with 5-minute dropdown).
+Backend: Node.js Express server with API fetch, SQLite storage (including trend calculation), and FCM notifications.
+PWA (Optional): React Native Web app with service worker for offline support.
+Testing Plan: Manual tests for sorting, notifications, trends, and offline mode; beta testing via TestFlight/Google Play.
+Bug Tracking: Monday.com setup for reporting and resolving issues.
+10. Success Criteria
+Users can view real-time wait times within 2 seconds of app launch.
+Sorting and filtering are intuitive, with no performance lag (<500ms response).
+Notifications are delivered reliably within 1 minute of user-defined conditions (wait time thresholds, reopenings).
+Trends are accurately displayed (green ↗ for increasing, red ↘ for decreasing, downtime counter for non-operational).
+UI reflects Disney’s magical aesthetic, with positive beta tester feedback (80% satisfaction).
+App supports up to 120 daily users (7:00 AM–11:59 PM ET, peak 9:00 AM–6:00 PM ET) on iOS 16+ and Android 11+, with optional PWA support on Chrome/Safari.
+11. Open Questions (To Be Resolved)
+API: What are the Queue-Times API’s rate limits and authentication requirements (e.g., API key)?
+Sorting: Are additional sort options (e.g., attraction type, proximity) needed?
+UI: Any additional screens (e.g., park overview)?
+Server: What are the Linux server’s specs (CPU, RAM, bandwidth)?
+Notifications: Should reopening alerts apply to all attractions or only favorites?
+12. Timeline (Indicative)
+Week 1: Finalize API authentication, set up GitHub repository, configure Linux server (Node.js, SQLite, PM2), and initialize Monday.com for bug tracking.
+Week 2–3: Generate and test core React Native app (attraction list with stars and trends, sorting, navigation).
+Week 4: Implement backend API fetch (https://queue-times.com/), trend calculation, and notification logic with Firebase.
+Week 5: Add offline support, notification settings (dropdown), and begin beta testing (TestFlight, Google Play).
+Week 6: Collect feedback via Monday.com, fix bugs, and prepare PWA or app store submission.
+13. Approval
+This updated Design Brief will guide the UI/UX and technical development of D'VIN. Approval from the developer/owner is required to proceed with bolt.ai code generation and testing.
+Developer/Owner: Matthew Ace Baugh
+Date: April 28, 2025
